@@ -52,10 +52,10 @@ function isInside(pos, rect){
 }
 
 var rect = {
-    x:14*32,
-    y:0.6*32,
-    width:32*3,
-    height:32
+    x:7*box,
+    y:9*box,
+    width:32*5,
+    height:32*2
 };
 
 var d;
@@ -138,8 +138,8 @@ function draw(){
 	    ctx.fillRect(7*box, 9*box, 32*5, 32*2);
 	    
 	    ctx.fillStyle = "white";
-	    ctx.font = "15px Arial";
-		ctx.fillText("GAME OVER",8*32+6,10*box+5);
+	    ctx.font = "25px Change one";
+		ctx.fillText("TRY AGAIN",7*32+12,10*box+10);
 	}
 	snake.unshift(newHead);
 
@@ -149,17 +149,79 @@ function draw(){
 	ctx.font = "45px Change one";
 	ctx.fillText(score,2*box,1.6*box);
 
-	ctx.fillStyle = 'red';
-    ctx.fillRect(14*box, 0.6*box, 32*3, 32);
+	// ctx.fillStyle = 'red';
+ //    ctx.fillRect(14*box, 0.6*box, 32*3, 32);
     
-    ctx.fillStyle = "white";
-    ctx.font = "15px Arial";
-	ctx.fillText("TRY AGAIN",14*32+6,1.3*box);
+ //    ctx.fillStyle = "white";
+ //    ctx.font = "15px Arial";
+	// ctx.fillText("",14*32+6,1.3*box);
 
-	ctx.strokeStyle = "black";
-		ctx.strokeRect(14*box, 0.6*box, 32*3, 32);
+	// ctx.strokeStyle = "black";
+	// 	ctx.strokeRect(14*box, 0.6*box, 32*3, 32);
 
 }
+
+if("ontouchstart" in document.documentElement){
+
+	document.addEventListener('touchstart', handleTouchStart, false);        
+	document.addEventListener('touchmove', handleTouchMove, false);
+
+	var xDown = null;                                                        
+	var yDown = null;
+
+	function getTouches(evt) {
+	  return evt.touches ||             // browser API
+	         evt.originalEvent.touches; // jQuery
+	}                                                     
+
+	function handleTouchStart(evt) {
+	evt.preventDefault();   
+	    const firstTouch = getTouches(evt)[0];                                      
+	    xDown = firstTouch.clientX;                                      
+	    yDown = firstTouch.clientY; 
+	                                         
+	};                                                
+
+	function handleTouchMove(evt) {
+	evt.preventDefault(); 
+	    if ( ! xDown || ! yDown ) {
+	        return;
+	    }
+
+	    var xUp = evt.touches[0].clientX;                                    
+	    var yUp = evt.touches[0].clientY;
+
+	    var xDiff = xDown - xUp;
+	    var yDiff = yDown - yUp;
+
+	    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+	        if ( xDiff > 0  && d != "RIGHT") {
+	            d ="LEFT";
+				left.play();
+	        } else {
+	        	if(d != "LEFT"){
+	        		d ="RIGHT";
+					right.play();
+	        	}
+	        }                       
+	    } else {
+	        if ( yDiff > 0  && d != "DOWN") {
+	            d ="UP";
+				up.play();
+	        } else { 
+	        	if(d != "UP"){
+	        		d ="DOWN";
+					down.play();
+	        	}
+	            
+	        }                                                                 
+	    }
+	    /* reset values */
+	    xDown = null;
+	    yDown = null;   
+	                                              
+	};
+};
 
 
 var game;
@@ -168,7 +230,7 @@ cvs.addEventListener('click', reset, false);
 
 function reset(event){
 	var mousePos = getMousePos(cvs, event);
-   	if (isInside(mousePos,rect)) {
+   	if (isInside(mousePos,rect) && !run) {
    		score = 0;
    		food = {
 			x : Math.floor(Math.random()*17+1) * box,
@@ -181,11 +243,13 @@ function reset(event){
 		}
 		d=""
 		if (!run){
-			game = setInterval(draw,100);
+			game = setInterval(draw,150);
+			run = true;
 		}
     	
 
     }
 }
 
-game = setInterval(draw,100);
+game = setInterval(draw,150);
+
