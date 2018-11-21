@@ -1,3 +1,29 @@
+var config = {
+    apiKey: "AIzaSyCp-YouZr_fkhRBn5eLheTAARH8CvVtVNY",
+    authDomain: "gamingwebsite-b16e5.firebaseapp.com",
+    databaseURL: "https://gamingwebsite-b16e5.firebaseio.com",
+    projectId: "gamingwebsite-b16e5",
+    storageBucket: "gamingwebsite-b16e5.appspot.com",
+    messagingSenderId: "813467457055"
+  };
+  firebase.initializeApp(config);
+  var firestore = firebase.firestore();
+
+  let name, email, uid, emailVerified;
+       firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+           name = user.displayName;
+           email = user.email;
+           emailVerified = user.emailVerified;
+           uid = user.uid;
+           
+        } else {
+          document.getElementById('test').innerText="error";
+      }
+      });
+  // const docRef = firestore.doc("snake_game/1bewWwASDo7bg2Dkq44X");
+  const table = document.querySelector("#score");
+
 const cvs = document.getElementById("snake");
 const ctx = cvs.getContext("2d");
 
@@ -149,16 +175,6 @@ function draw(){
 	ctx.font = "45px Change one";
 	ctx.fillText(score,2*box,1.6*box);
 
-	// ctx.fillStyle = 'red';
- //    ctx.fillRect(14*box, 0.6*box, 32*3, 32);
-    
- //    ctx.fillStyle = "white";
- //    ctx.font = "15px Arial";
-	// ctx.fillText("",14*32+6,1.3*box);
-
-	// ctx.strokeStyle = "black";
-	// 	ctx.strokeRect(14*box, 0.6*box, 32*3, 32);
-
 }
 
 if("ontouchstart" in document.documentElement){
@@ -253,3 +269,51 @@ function reset(event){
 
 game = setInterval(draw,150);
 
+let minscore=0;
+let mymax = 0;
+
+getRealtimeScoreBoard = function(){
+  	firestore.collection("snake_game").orderBy("score", "desc")
+    .onSnapshot(function(querySnapshot) {
+        
+        let count=0;
+        querySnapshot.forEach(function(doc) {
+
+            const myData = doc.data();
+		    const myID = doc.id;
+
+		    if(myID==uid && mymax<myData.score){
+				mymax = myData.score;
+			}
+
+		    if(count==0){
+		    	table.innerHTML = "";
+		    }
+		    
+		    count+=1;
+		    if(count<11){
+		    	minscore=myData.score;
+		  		var row = table.insertRow(table.rows.length);
+			    var cell1 = row.insertCell(0);
+			    var cell2 = row.insertCell(1);
+			    cell1.innerHTML = myData.name;
+			    cell2.innerHTML = myData.score; 
+		    } 
+		    else{
+		    	firestore.collection("snake_game").doc(myID).delete();
+		    }
+        });  
+    });
+  }
+
+getRealtimeScoreBoard();
+
+function updateScore(){
+	if (score>minscore && mymax<score){
+    	var newscore = firestore.collection("snake_game");
+		newscore.doc(uid).set({
+	    name: name, score: score });
+	}
+}
+
+let uscore = setInterval(updateScore,500);
