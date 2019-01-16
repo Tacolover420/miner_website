@@ -1,0 +1,66 @@
+<html>
+<head>
+  <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>welcome</title>
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-auth.js"></script>
+
+  <link href="main.css" rel="stylesheet" type="text/css">
+  <style type="text/css">
+  body {
+    background: #76b852; /* fallback for old browsers */
+    background: -webkit-linear-gradient(right, #76b852, #8DC26F);
+    background: -moz-linear-gradient(right, #76b852, #8DC26F);
+    background: -o-linear-gradient(right, #76b852, #8DC26F);
+    background: linear-gradient(to left, #76b852, #8DC26F);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;      
+    }</style>
+  </head>
+  <body>
+    <div id ="login" class="signin">
+      <div class="login-page">
+        <h4 id = "error"></h4>
+        <h4 id="test"></h4>
+        <div class="form">
+          <form class="login-form">
+            <input id ="email" type="text" placeholder="email address"/>
+            <input id ="password" type="password" placeholder="password"/>
+          </form>
+          <button class="mainbutton" onclick="signIn()">login</button>
+          <p class="message">Not registered? <button onclick="signup1()">Open Account</button></p>
+        </div>
+      </div>
+    </div>
+    <div id="signup" class="signup">
+      <div class="login-page">
+        <div class="form" >
+          <form class="register-form" name="register">
+            <input name ="name" type="text" placeholder="Name"/>
+            <input name ="password" type="password" placeholder="password"/>
+            <input name ="email" type="text" placeholder="email address"/>
+          </form>
+          <button class="mainbutton" onclick="signUP()">create</button>
+          <p class="message">Already registered? <button onclick="login()">Log In</button></p>
+        </div>
+      </div>
+    </div>
+
+  </body>
+  <script type="text/javascript">
+      function login(){
+        document.getElementById('login').style.display= 'block' ;
+        document.getElementById('signup').style.display= 'none' ;
+      }
+      function signup1(){
+        document.getElementById('signup').style.display= 'block' ;
+        document.getElementById('login').style.display= 'none' ;
+      }
+  </script>
+
+  <script src="app.js"></script>
+
+  </html>
